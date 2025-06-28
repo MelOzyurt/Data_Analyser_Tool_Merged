@@ -97,7 +97,7 @@ if uploaded_file:
         st.markdown("### AI Insights")
         st.write(ai_result)
 
-   elif option == "Chi-Square Test":
+    elif option == "Chi-Square Test":
         categorical_cols = df.select_dtypes(include=['object', 'category']).columns.tolist()
         if len(categorical_cols) >= 2:
             col1 = st.selectbox("Select first categorical column", categorical_cols)
@@ -111,6 +111,7 @@ if uploaded_file:
                 st.write(ai_result)
         else:
             st.error("Dataset does not have enough categorical columns for Chi-Square test.")
+
 
     elif option == "T-Test":
         numeric_cols = df.select_dtypes(include=np.number).columns.tolist()
