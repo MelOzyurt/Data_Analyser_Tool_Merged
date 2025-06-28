@@ -1,3 +1,5 @@
+#Merged one
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -95,5 +97,35 @@ if uploaded_file:
         st.markdown("### AI Insights")
         st.write(ai_result)
 
-    elif option == "Chi-Square Test":
-        categorical_cols = df.select_dtypes(include=['object', 'category'])
+   elif option == "Chi-Square Test":
+        categorical_cols = df.select_dtypes(include=['object', 'category']).columns.tolist()
+        if len(categorical_cols) >= 2:
+            col1 = st.selectbox("Select first categorical column", categorical_cols)
+            col2 = st.selectbox("Select second categorical column", categorical_cols, index=1)
+            if col1 != col2:
+                result, p_val = chi_square_analysis(df, col1, col2)
+                st.write(result)
+                prompt = f"Interpret the chi-square test result with p-value {p_val} between {col1} and {col2}."
+                ai_result = ai_interpretation(prompt)
+                st.markdown("### AI Insights")
+                st.write(ai_result)
+        else:
+            st.error("Dataset does not have enough categorical columns for Chi-Square test.")
+
+    elif option == "T-Test":
+        numeric_cols = df.select_dtypes(include=np.number).columns.tolist()
+        if len(numeric_cols) >= 2:
+            col1 = st.selectbox("Select first numeric column", numeric_cols)
+            col2 = st.selectbox("Select second numeric column", numeric_cols, index=1)
+            if col1 != col2:
+                try:
+                    result, p_val = t_test_analysis(df, col1, col2)
+                    st.write(result)
+                    prompt = f"Interpret the t-test result with p-value {p_val} comparing {col1} and {col2}."
+                    ai_result = ai_interpretation(prompt)
+                    st.markdown("### AI Insights")
+                    st.write(ai_result)
+                except Exception as e:
+                    st.error(f"T-Test Error: {e}")
+        else:
+            st.error("Dataset does not have enough numeric columns for T-Test.")
